@@ -17,7 +17,8 @@
         <activity
             android:name=".activities.SearchActivity"
             android:exported="false"
-            android:theme="@style/Theme.EcommerceApp.ActionBar"/>
+            android:theme="@style/Theme.EcommerceApp.ActionBar"
+            />
         <activity
             android:name=".activities.CategoryActivity"
             android:exported="false"

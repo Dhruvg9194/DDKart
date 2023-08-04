@@ -23,9 +23,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:mt_hint="Search your desired product"
-            app:mt_placeholder="DD Kart"
-            app:mt_navIconEnabled="true"
             app:mt_maxSuggestionsCount="10"
+            app:mt_navIconEnabled="true"
+            app:mt_placeholder="DD Kart"
+            app:mt_roundedSearchBarEnabled="true"
             app:mt_speechMode="true"
 
             />

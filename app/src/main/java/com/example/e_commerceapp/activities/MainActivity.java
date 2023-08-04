@@ -1,11 +1,14 @@
 package com.example.e_commerceapp.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -13,7 +16,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.e_commerceapp.R;
 import com.example.e_commerceapp.adapters.CategoryAdapter;
 import com.example.e_commerceapp.adapters.ProductAdapter;
 import com.example.e_commerceapp.databinding.ActivityMainBinding;
@@ -28,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
     ProductAdapter productAdapter;
     ArrayList<Product> products;
 
+    private List<String> lastsearches;
+    private final int REQ_CODE = 100;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,10 +53,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
 
+
+
+
+        binding.searchBar.setSpeechMode(true);
+//        binding.searchBar.isSpeechModeEnabled();
         binding.searchBar.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+
             @Override
             public void onSearchStateChanged(boolean enabled) {
-
+                String s = enabled ? "enabled" : "disabled";
+                Toast.makeText(MainActivity.this, "Search " + s, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -60,9 +75,28 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onButtonClicked(int buttonCode) {
+                switch(buttonCode) {
+                    case MaterialSearchBar.BUTTON_SPEECH:
+                        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Need to speak");
+                        try {
+                            startActivityForResult(intent, REQ_CODE);
+                        } catch (ActivityNotFoundException a) {
+                            Toast.makeText(getApplicationContext(),
+                                    "Sorry your device not supported",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                }
+
+
 
             }
         });
+
+
 
         initCategories();
         initProducts();
